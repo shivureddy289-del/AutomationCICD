@@ -7,6 +7,14 @@
 			class-name="AbstractComponents.Listeners"></listener>
 
 	</listeners>
+	
+	<!-- ADD THIS NEW BLOCK -->
+	<test thread-count="1" name="Cucumber BDD Tests">
+		<classes>
+			<class name="Runner.TestRunner" />
+		</classes>
+	</test>
+	
 	<test thread-count="5" name="Submit Order Test">
 		<classes>
 			<class name="RahulShetty.SeleniumFrameworkDesign_R.SubmitOrderTest" />
