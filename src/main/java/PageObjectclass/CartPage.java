@@ -32,18 +32,30 @@ public class CartPage extends AbstractMethod {
 
 	public void waitForCartPageToLoad() {
 		wait.until(ExpectedConditions.urlContains("cart")); // wait for URL to change to cart
+
 	}
 
 	public Boolean verifyProductDsplay(String ProductName) {
+		/*
 		waitForElementToAppear(cartProductsBy);
 		if (CartProducts.isEmpty()) {
 			System.out.println("Cart is empty.");
-			return false;
+			return false;								//** it will through error if element not visible
 		}
 
 		Boolean Match = CartProducts.stream()
 				.anyMatch(CartProduct -> CartProduct.getText().equalsIgnoreCase(ProductName));
 		return Match;
+		*/
+		
+		List<WebElement> cartSections = driver.findElements(cartProductsBy);
+	    if (cartSections.isEmpty()) {
+	        System.out.println("Cart is empty.");
+	        return false;
+	    }
+	    Boolean Match = CartProducts.stream()
+	        .anyMatch(CartProduct -> CartProduct.getText().equalsIgnoreCase(ProductName));
+	    return Match;
 
 	}
 
@@ -55,6 +67,6 @@ public class CartPage extends AbstractMethod {
 //		 JavascriptExecutor js = (JavascriptExecutor) driver;
 //		    js.executeScript("arguments[0].scrollIntoView(true);", Checkout);
 //		    js.executeScript("arguments[0].click();", Checkout); // bypasses interception
-		//Checkout.click();
+		// Checkout.click();
 	}
 }

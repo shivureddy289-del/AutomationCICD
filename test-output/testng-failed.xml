@@ -8,8 +8,8 @@
     <classes>
       <class name="RahulShetty.SeleniumFrameworkDesign_R.ErrorValidationsTest">
         <methods>
-          <include name="LoginErrorValidation"/>
           <include name="launchApplication"/>
+          <include name="ProductErrorValidation"/>
           <include name="tearDown"/>
         </methods>
       </class> <!-- RahulShetty.SeleniumFrameworkDesign_R.ErrorValidationsTest -->
