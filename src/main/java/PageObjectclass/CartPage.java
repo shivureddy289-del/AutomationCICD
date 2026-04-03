@@ -31,31 +31,22 @@ public class CartPage extends AbstractMethod {
 	List<WebElement> CartProducts;
 
 	public void waitForCartPageToLoad() {
-		wait.until(ExpectedConditions.urlContains("cart")); // wait for URL to change to cart
+		wait.until(ExpectedConditions.or(ExpectedConditions.urlContains("cart"),
+				ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='cartSection']")),
+				ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'No Products')]"))));
 
 	}
 
 	public Boolean verifyProductDsplay(String ProductName) {
-		/*
-		waitForElementToAppear(cartProductsBy);
-		if (CartProducts.isEmpty()) {
-			System.out.println("Cart is empty.");
-			return false;								//** it will through error if element not visible
-		}
 
+		List<WebElement> cartSections = driver.findElements(cartProductsBy);
+		if (cartSections.isEmpty()) {
+			System.out.println("Cart is empty.");
+			return false;
+		}
 		Boolean Match = CartProducts.stream()
 				.anyMatch(CartProduct -> CartProduct.getText().equalsIgnoreCase(ProductName));
 		return Match;
-		*/
-		
-		List<WebElement> cartSections = driver.findElements(cartProductsBy);
-	    if (cartSections.isEmpty()) {
-	        System.out.println("Cart is empty.");
-	        return false;
-	    }
-	    Boolean Match = CartProducts.stream()
-	        .anyMatch(CartProduct -> CartProduct.getText().equalsIgnoreCase(ProductName));
-	    return Match;
 
 	}
 
