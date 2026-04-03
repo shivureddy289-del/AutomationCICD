@@ -39,7 +39,8 @@ public class SubmitOrderTest extends BaseTest {
 		productcatl.scrollToTop();
 		CartPage cart = productcatl.goToCartPage();
 		Boolean match = cart.verifyProductDsplay(productname);
-		Assert.assertTrue(match);
+		Assert.assertTrue(match, "FAIL: The product '" + productname + "' was NOT found in the cart list.");
+		//Assert.assertTrue(match);
 		cart.goToCheckout();
 
 		// CheckoutPage
