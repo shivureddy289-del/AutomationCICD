@@ -43,7 +43,7 @@ public class ErrorValidationsTest extends BaseTest {
 		productcatl.addProductToCart(productname);
 
 		// 3. Go to cart
-	//	productcatl.scrollToTop();
+		productcatl.scrollToTop();
 		CartPage cart=productcatl.goToCartPage(); // just clicks, returns void
 		Boolean match = cart.verifyProductDsplay("IPHONE 16 PRO");
 		Assert.assertFalse(match);
