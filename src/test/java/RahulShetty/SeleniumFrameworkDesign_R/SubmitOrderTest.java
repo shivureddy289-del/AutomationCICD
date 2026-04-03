@@ -36,7 +36,7 @@ public class SubmitOrderTest extends BaseTest {
 		productcatl.addProductToCart(productname);
 
 		// 3. Go to cart
-		productcatl.scrollToTop();
+		//productcatl.scrollToTop();
 		CartPage cart = productcatl.goToCartPage();
 		Boolean match = cart.verifyProductDsplay(productname);
 		Assert.assertTrue(match);
