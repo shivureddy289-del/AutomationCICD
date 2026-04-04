@@ -31,15 +31,24 @@ public class CartPage extends AbstractMethod {
 	List<WebElement> CartProducts;
 
 	public void waitForCartPageToLoad() {
-		wait.until(ExpectedConditions.or(ExpectedConditions.urlContains("cart"),
-				ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='cartSection']")),
-				ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'No Products')]"))));
+//		wait.until(ExpectedConditions.or(ExpectedConditions.urlContains("cart"),
+//				ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='cartSection']")),
+//				ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(),'No Products')]"))));
+		// Step 1: wait for URL to change to cart
+	    wait.until(ExpectedConditions.urlContains("cart"));
+	    // Step 2: wait for product h3 titles OR empty message
+	    wait.until(ExpectedConditions.or(
+	        ExpectedConditions.visibilityOfElementLocated(
+	            By.xpath("//div[@class='cartSection']//h3")),
+	        ExpectedConditions.visibilityOfElementLocated(
+	            By.xpath("//*[contains(text(),'No Products')]"))
+	    ));
 
 	}
 
 	public Boolean verifyProductDsplay(String ProductName) {
 
-		
+		 waitForCartPageToLoad();
 		
 		List<WebElement> cartSections = driver.findElements(cartProductsBy);
 		if (cartSections.isEmpty()) {

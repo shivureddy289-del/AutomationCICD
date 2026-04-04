@@ -34,6 +34,8 @@ public class AbstractMethod {
 	public CartPage goToCartPage() {
 		waitForWebElementToAppear(CartHeder);
 		CartHeder.click();
+		 // Wait for browser to actually navigate to cart URL first
+	    wait.until(ExpectedConditions.urlContains("cart"));
 		CartPage cartpage = new CartPage(driver,wait);
 		cartpage.waitForCartPageToLoad();
 		return cartpage;
