@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import AbstractComponents.AbstractMethod;
@@ -51,9 +52,11 @@ public class ProductCatlogPage extends AbstractMethod {
 	public void addProductToCart(String productname) throws InterruptedException {
 		WebElement product = getProductByName(productname); // finds internally
 		WebElement btn = product.findElement(addToCart);
+		waitForElementToBeClickable(btn);
 		scrollAndClick(btn);
 		waitForElementToAppear(tostMessage);
-		waitForElementDisappear(tostMessageDisappear);
+		waitForElementDisappear(tostMessage); 
+		//waitForElementDisappear(tostMessageDisappear);
 		scrollToTop();
 		
 	}

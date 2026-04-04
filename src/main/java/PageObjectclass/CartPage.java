@@ -40,11 +40,16 @@ public class CartPage extends AbstractMethod {
 	public Boolean verifyProductDsplay(String ProductName) {
 
 		
+		
 		List<WebElement> cartSections = driver.findElements(cartProductsBy);
 		if (cartSections.isEmpty()) {
 			System.out.println("Cart is empty.");
 			return false;
 		}
+		
+		
+
+		
 		Boolean Match = CartProducts.stream()
 				.anyMatch(CartProduct -> CartProduct.getText().equalsIgnoreCase(ProductName));
 		return Match;

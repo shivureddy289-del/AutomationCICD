@@ -109,6 +109,7 @@
 					<suiteXmlFiles>
 						<suiteXmlFile>testSuites/testngMVN.xml</suiteXmlFile>
 					</suiteXmlFiles>
+					<argLine>-Xmx512m -Xms256m</argLine> <!-- ADD THIS LINE -->
 				</configuration>
 			</plugin>
 

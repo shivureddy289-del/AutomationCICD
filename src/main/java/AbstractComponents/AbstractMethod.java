@@ -68,15 +68,20 @@ public class AbstractMethod {
 	}
 
 	public void scrollAndClick(WebElement element) throws InterruptedException {
-		JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("arguments[0].scrollIntoView(true);", element);
-		Thread.sleep(500);
-		js.executeScript("arguments[0].click();", element);
+	    JavascriptExecutor js = (JavascriptExecutor) driver;
+	    js.executeScript("arguments[0].scrollIntoView(true);", element);
+	    wait.until(ExpectedConditions.elementToBeClickable(element)); // ← replace Thread.sleep
+	    js.executeScript("arguments[0].click();", element);
 	}
 
 	public void waitForElementDisappear(By findBy) {
 
 		wait.until(ExpectedConditions.invisibilityOfElementLocated(findBy));
+	}
+	
+	public void waitForElementToBeClickable(WebElement element) {
+	    
+	    wait.until(ExpectedConditions.elementToBeClickable(element));
 	}
 
 	public void scrollToTop() throws InterruptedException {

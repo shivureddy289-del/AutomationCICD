@@ -39,25 +39,19 @@ public class BaseTest {
 		fis = new FileInputStream(System.getProperty("user.dir") + "/src/test/resources/GlobalData.properties");
 		prop.load(fis);
 
-		
-		String browsername = System.getProperty("browser") != null 
-			    ? System.getProperty("browser")     
-			    : prop.getProperty("browser"); 
-		
+		String browsername = System.getProperty("browser") != null ? System.getProperty("browser")
+				: prop.getProperty("browser");
+
 		if (browsername.equalsIgnoreCase("chrome")) {
-//			ChromeOptions options = new ChromeOptions();
-//			options.addArguments("--headless"); // Runs without a UI
-//			options.addArguments("--disable-gpu"); // Recommended for Windows
-//			options.addArguments("--no-sandbox"); // Overcomes resource constraints
-//			options.addArguments("--disable-dev-shm-usage");
+
 			driver = new ChromeDriver();
 
 		} else if (browsername.equalsIgnoreCase("firefox")) {
 			driver = new FirefoxDriver();
 
 		} else if (browsername.equalsIgnoreCase("edge")) {
-
 			driver = new EdgeDriver();
+			
 		} else {
 			throw new RuntimeException("Invalid browser name in GlobalData.properties");
 		}
@@ -88,7 +82,7 @@ public class BaseTest {
 	}
 
 	// Screenshots
-	public String getScreenShot(String testCaseName,WebDriver driver) throws IOException {
+	public String getScreenShot(String testCaseName, WebDriver driver) throws IOException {
 		TakesScreenshot ts = (TakesScreenshot) driver;
 		File source = ts.getScreenshotAs(OutputType.FILE);
 		File file = new File(System.getProperty("user.dir") + "//reports//" + testCaseName + ".png");
