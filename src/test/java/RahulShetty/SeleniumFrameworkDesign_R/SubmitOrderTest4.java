@@ -1,73 +1,62 @@
 package RahulShetty.SeleniumFrameworkDesign_R;
 
-import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
 import AbstractComponents.BaseTest;
 import PageObjectclass.CartPage;
 import PageObjectclass.CheckoutPage;
 import PageObjectclass.ConfirmationPage;
-import PageObjectclass.LonginPage;
 import PageObjectclass.OrderPage;
 import PageObjectclass.ProductCatlogPage;
 
 public class SubmitOrderTest4 extends BaseTest {
 
-//	String productname = "IPHONE 13 PRO";
+    @Test(dataProvider = "getData", groups = {"purchase"})
+    public void submitOrder(HashMap<String, String> input)
+            throws IOException, InterruptedException {
 
-	@Test(dataProvider = "getData", groups = { "purchase" })
-	public void SubmitOrder(HashMap<String, String> input) throws IOException, InterruptedException {
+        // Step 1: Login and get product catalog
+        ProductCatlogPage productCatalog = loginpage.LoginApplication(
+            input.get("email"),
+            input.get("password")
+        );
 
-		// 1)LoginPageClass
-		ProductCatlogPage productcatl = loginpage.LoginApplication(input.get("email"), input.get("password"));
-		List<WebElement> products = productcatl.getProductLists();
-		productcatl.addProductToCart(input.get("product"));
+        // Step 2: Add product to cart
+        productCatalog.getProductLists();
+        productCatalog.addProductToCart(input.get("product"));
 
-		// 3. Go to cart
-		productcatl.scrollToTop();
-		CartPage cart = productcatl.goToCartPage();
-		Boolean match = cart.verifyProductDsplay(input.get("product"));
-		Assert.assertTrue(match);
-		cart.goToCheckout();
+        // Step 3: Go to cart and verify product
+        productCatalog.scrollToTop();
+        CartPage cart = productCatalog.goToCartPage();
+        boolean match = cart.verifyProductDsplay(input.get("product"));
+        Assert.assertTrue(match, "FAIL: '" + input.get("product") + "' was NOT found in cart.");
 
-		// CheckoutPage
-		CheckoutPage checkout = new CheckoutPage(driver, wait);
-		checkout.fillCvv("453");
-		checkout.fillNameOnCard("Roye");
-		checkout.selectCountry("india");
-		checkout.placeOrder();
+        // Step 4: Checkout
+        cart.goToCheckout();
+        CheckoutPage checkout = new CheckoutPage(driver, wait);
+        checkout.fillCvv("453");
+        checkout.fillNameOnCard("Roye");
+        checkout.selectCountry("india");
+        checkout.placeOrder();
 
-		// ConfirmationPage
-		ConfirmationPage confirmMessage = new ConfirmationPage(driver, wait);
-		String confirmessage = confirmMessage.getConfirmationMessage();
-		Assert.assertTrue(confirmessage.equalsIgnoreCase("Thankyou for the order."));
+        // Step 5: Verify confirmation message
+        ConfirmationPage confirmationPage = new ConfirmationPage(driver, wait);
+        String confirmationMessage = confirmationPage.getConfirmationMessage();
+        Assert.assertTrue(
+            confirmationMessage.equalsIgnoreCase("Thankyou for the order."),
+            "FAIL: Confirmation message did not match. Actual: " + confirmationMessage
+        );
+    }
 
-	}
-	
-
-	@DataProvider
-	public Object[][] getData() throws IOException {
-
-		List<HashMap<String, String>> data = getJsonDataToMap(
-				System.getProperty("user.dir") + "\\src\\test\\resources\\TestData\\purchaseOrder.json");
-		return new Object[][] { { data.get(0) }, { data.get(1) } };
-	}
-
+    @DataProvider
+    public Object[][] getData() throws IOException {
+        List<HashMap<String, String>> data = getJsonDataToMap(
+            System.getProperty("user.dir") + "/src/test/resources/TestData/purchaseOrder.json"
+        );
+        return new Object[][] {{data.get(0)}, {data.get(1)}};
+    }
 }

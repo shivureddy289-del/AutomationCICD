@@ -11,7 +11,8 @@ public class ExtentReporterNg {
 		String path = System.getProperty("user.dir")+"/reports/index.html";
 		
 		// Create reports folder if it doesn't exist
-	    new File(System.getProperty("user.dir") + "/reports").mkdirs();
+		File reportsDir = new File(System.getProperty("user.dir") + "/reports");
+		reportsDir.mkdirs();
 		
 		ExtentSparkReporter reporter =new ExtentSparkReporter(path);
 		reporter.config().setReportName("Web Automation Results");

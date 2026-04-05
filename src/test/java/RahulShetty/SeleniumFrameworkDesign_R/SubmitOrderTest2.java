@@ -1,75 +1,86 @@
 package RahulShetty.SeleniumFrameworkDesign_R;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.util.List;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
 import AbstractComponents.BaseTest;
 import PageObjectclass.CartPage;
 import PageObjectclass.CheckoutPage;
 import PageObjectclass.ConfirmationPage;
-import PageObjectclass.LonginPage;
 import PageObjectclass.OrderPage;
 import PageObjectclass.ProductCatlogPage;
 
 public class SubmitOrderTest2 extends BaseTest {
 
-//	String productname = "IPHONE 13 PRO";
+    // Store ordered details for orderHistoryTest
+    private String orderedProductName;
+    private String orderedEmail;
+    private String orderedPassword;
 
-	@Test(dataProvider = "getData",groups = {"purchase"})
-	public void SubmitOrder(String email,String password,String productName) throws IOException, InterruptedException {
+    @Test(dataProvider = "getData", groups = {"purchase"})
+    public void submitOrder(String email, String password, String productName)
+            throws IOException, InterruptedException {
 
-		// 1)LoginPageClass
-		ProductCatlogPage productcatl = loginpage.LoginApplication(email,password);
-		List<WebElement> products = productcatl.getProductLists();
-		productcatl.addProductToCart(productName);
+        // Store for orderHistoryTest
+        this.orderedProductName = productName;
+        this.orderedEmail       = email;
+        this.orderedPassword    = password;
 
-		// 3. Go to cart
-		productcatl.scrollToTop();
-		CartPage cart = productcatl.goToCartPage();
-		Boolean match = cart.verifyProductDsplay(productName);
-		Assert.assertTrue(match);
-		cart.goToCheckout();
+        // Step 1: Login and get product catalog
+        ProductCatlogPage productCatalog = loginpage.LoginApplication(email, password);
 
-		// CheckoutPage
-		CheckoutPage checkout = new CheckoutPage(driver,wait);
-		checkout.fillCvv("453");
-		checkout.fillNameOnCard("Roye");
-		checkout.selectCountry("india");
-		checkout.placeOrder();
+        // Step 2: Add product to cart
+        productCatalog.getProductLists();
+        productCatalog.addProductToCart(productName);
 
-		// ConfirmationPage
-		ConfirmationPage confirmMessage = new ConfirmationPage(driver,wait);
-		String confirmessage = confirmMessage.getConfirmationMessage();
-		Assert.assertTrue(confirmessage.equalsIgnoreCase("Thankyou for the order."));
+        // Step 3: Go to cart and verify product
+        productCatalog.scrollToTop();
+        CartPage cart = productCatalog.goToCartPage();
+        boolean match = cart.verifyProductDsplay(productName);
+        Assert.assertTrue(match, "FAIL: '" + productName + "' was NOT found in cart.");
 
-	}
+        // Step 4: Checkout
+        cart.goToCheckout();
+        CheckoutPage checkout = new CheckoutPage(driver, wait);
+        checkout.fillCvv("453");
+        checkout.fillNameOnCard("Roye");
+        checkout.selectCountry("india");
+        checkout.placeOrder();
 
-	@Test(dependsOnMethods = "SubmitOrder")
-	public void OrderHistoryTest() {
-		// "IPHONE 13 PRO disply in orderhistory or not
-		ProductCatlogPage OrderPage = loginpage.LoginApplication("rohit.gouda123@gmail.com", "Rohit@123");
-		OrderPage orderpage = OrderPage.goToOrderPage();
-		//Assert.assertTrue(orderpage.verifyOrderDsplay(productname));
+        // Step 5: Verify confirmation message
+        ConfirmationPage confirmationPage = new ConfirmationPage(driver, wait);
+        String confirmationMessage = confirmationPage.getConfirmationMessage();
+        Assert.assertTrue(
+            confirmationMessage.equalsIgnoreCase("Thankyou for the order."),
+            "FAIL: Confirmation message did not match. Actual: " + confirmationMessage
+        );
+    }
 
-	}
-	
-	@DataProvider
-	public Object[][] getData()
-	{
-		return new Object[][] {{"mahesh0123@gmail.com","Mahi@123","ADIDAS ORIGINAL"},{"rohit.gouda123@gmail.com","Rohit@123","IPHONE 13 PRO"}};
-	}
-	
+    @Test(dependsOnMethods = "submitOrder")
+    public void orderHistoryTest() {
 
+        // Step 1: Login with same user who placed the order
+        ProductCatlogPage productCatalog = loginpage.LoginApplication(
+            orderedEmail,
+            orderedPassword
+        );
+
+        // Step 2: Verify product appears in order history
+        OrderPage orderPage = productCatalog.goToOrderPage();
+        Assert.assertTrue(
+            orderPage.verifyOrderDsplay(orderedProductName),
+            "FAIL: Product '" + orderedProductName + "' was NOT found in order history."
+        );
+    }
+
+    @DataProvider
+    public Object[][] getData() {
+        return new Object[][] {
+            {"mahesh0123@gmail.com",     "Mahi@123",   "ADIDAS ORIGINAL"},
+            {"rohit.gouda123@gmail.com", "Rohit@123",  "IPHONE 13 PRO"}
+        };
+    }
 }

@@ -1,53 +1,56 @@
 package RahulShetty.SeleniumFrameworkDesign_R;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.List;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
 import AbstractComponents.BaseTest;
 import AbstractComponents.IRetryAnalizer;
 import PageObjectclass.CartPage;
-import PageObjectclass.CheckoutPage;
-import PageObjectclass.ConfirmationPage;
-import PageObjectclass.LonginPage;
 import PageObjectclass.ProductCatlogPage;
 
 public class ErrorValidationsTest extends BaseTest {
 
-	@Test(groups = {"ErrroHandling"},retryAnalyzer=IRetryAnalizer.class)
-	public void LoginErrorValidation() throws IOException, InterruptedException {
-		String productname = "IPHONE 13 PRO";
+    @Test(groups = {"ErrorHandling"}, retryAnalyzer = IRetryAnalizer.class)
+    public void loginErrorValidation() throws IOException {
 
-		// 1)LoginPageClass
-		loginpage.LoginApplication("rohit.gou123@gmail.com", "Rohi@123");
-		Assert.assertEquals("Incorrect email or password.", loginpage.getErrorMessage());
-	}
+        // Attempt login with wrong credentials
+        loginpage.LoginApplication("rohit.gou123@gmail.com", "Rohi@123");
 
-	@Test
-	public void ProductErrorValidation() throws IOException, InterruptedException {
-		String productname = "IPHONE 13 PRO";
+        // Verify error message is displayed
+        Assert.assertEquals(
+            loginpage.getErrorMessage(),
+            "Incorrect email or password.",
+            "FAIL: Login error message did not match."
+        );
+    }
 
-		// 1)LoginPageClass
-		ProductCatlogPage productcatl = loginpage.LoginApplication("rohit.gouda123@gmail.com", "Rohit@123");
-		List<WebElement> products = productcatl.getProductLists();
-		productcatl.addProductToCart(productname);
+    @Test
+    public void productErrorValidation() throws IOException, InterruptedException {
 
-		// 3. Go to cart
-		productcatl.scrollToTop();
-		CartPage cart=productcatl.goToCartPage(); // just clicks, returns void
-		Boolean match = cart.verifyProductDsplay("IPHONE 16 PRO");
-		Assert.assertFalse(match);
+        String productName = "IPHONE 13 PRO";
+        String wrongProductName = "IPHONE 16 PRO";
 
-	}
+        // Step 1: Login and go to product catalog
+        ProductCatlogPage productCatalog = loginpage.LoginApplication(
+            "rohit.gouda123@gmail.com",
+            "Rohit@123"
+        );
 
+        // Step 2: Add actual product to cart
+        List<WebElement> products = productCatalog.getProductLists();
+        productCatalog.addProductToCart(productName);
+
+        // Step 3: Go to cart
+        productCatalog.scrollToTop();
+        CartPage cart = productCatalog.goToCartPage();
+
+        // Step 4: Verify wrong product name is NOT in cart
+        boolean match = cart.verifyProductDsplay(wrongProductName);
+        Assert.assertFalse(
+            match,
+            "FAIL: Product '" + wrongProductName + "' should NOT be in cart but was found."
+        );
+    }
 }
