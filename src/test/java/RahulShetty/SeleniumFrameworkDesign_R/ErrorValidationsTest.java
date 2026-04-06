@@ -21,7 +21,7 @@ public class ErrorValidationsTest extends BaseTest {
         // Verify error message is displayed
         Assert.assertEquals(
             loginpage.getErrorMessage(),
-            "Incorrect email or password.",
+            "Incorrect email  password.",
             "FAIL: Login error message did not match."
         );
     }
